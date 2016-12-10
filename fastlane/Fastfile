@@ -1,3 +1,23 @@
-lane :test do
-  cordova
+platform :ios do
+  desc "Deploy ios app on the appstore"
+
+  lane :deploy do
+    match(type: "appstore")
+    cordova(platform: 'ios')
+    appstore(ipa: ENV('CORDOVA_IOS_RELEASE_BUILD_PATH'))
+  end
+end
+
+platform :android do
+  desc "Deploy android app on play store"
+
+  lane :deploy do
+    cordova(
+      platform: 'android',
+      keystore_path: './prod.keystore',
+      keystore_alias: 'prod',
+      keystore_password: 'password'
+    )
+    supply(apk: ENV('CORDOVA_ANDROID_RELEASE_BUILD_PATH'))
+  end
 end

@@ -1,4 +1,4 @@
-# cordova plugin
+# Cordova Plugin
 
 [![fastlane Plugin Badge](https://rawcdn.githack.com/fastlane/fastlane/master/fastlane/assets/plugin-badge.svg)](https://rubygems.org/gems/fastlane-plugin-cordova)
 
@@ -10,17 +10,41 @@ This project is a [fastlane](https://github.com/fastlane/fastlane) plugin. To ge
 fastlane add_plugin cordova
 ```
 
-## About cordova
+Then you can integrate it into your Fastlane setup:
 
-Build your Cordova app
+```ruby
+platform :ios do
+  desc "Deploy ios app on the appstore"
 
-**Note to author:** Add a more detailed description about this plugin here. If your plugin contains multiple actions, make sure to mention them here.
+  lane :deploy do
+    match(type: "appstore")
+    cordova(platform: 'ios')
+    appstore(ipa: ENV('CORDOVA_IOS_RELEASE_BUILD_PATH'))
+  end
+end
 
-## Example
+platform :android do
+  desc "Deploy android app on play store"
 
-Check out the [example `Fastfile`](fastlane/Fastfile) to see how to use this plugin. Try it by cloning the repo, running `fastlane install_plugins` and `bundle exec fastlane test`.
+  lane :deploy do
+    cordova(
+      platform: 'android',
+      keystore_path: './prod.keystore',
+      keystore_alias: 'prod',
+      keystore_password: 'password'
+    )
+    supply(apk: ENV('CORDOVA_ANDROID_RELEASE_BUILD_PATH'))
+  end
+end
+```
 
-**Note to author:** Please set up a sample project to make it easy for users to explore what your plugin does. Provide everything that is necessary to try out the plugin in this project (including a sample Xcode/Android project if necessary)
+with an `Appfile` such as
+
+```ruby
+app_identifier com.awesome.app
+apple_id apple@id.com
+team_id 28323HT
+```
 
 ## Run tests for this plugin
 

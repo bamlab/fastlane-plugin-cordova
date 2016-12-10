@@ -1,43 +1,216 @@
 module Fastlane
   module Actions
+    module SharedValues
+      CORDOVA_IOS_RELEASE_BUILD_PATH = :CORDOVA_IOS_RELEASE_BUILD_PATH
+      CORDOVA_ANDROID_RELEASE_BUILD_PATH = :CORDOVA_ANDROID_RELEASE_BUILD_PATH
+    end
+
     class CordovaAction < Action
-      def self.run(params)
-        UI.message("The cordova plugin is working!")
+      ANDROID_ARGS_MAP = {
+        keystore_path: 'keystore',
+        keystore_password: 'storePassword',
+        key_password: 'password',
+        keystore_alias: 'alias'
+      }
+
+      IOS_ARGS_MAP = {
+        type: 'packageType',
+        team_id: 'developmentTeam',
+        provisioning_profile: 'provisioningProfile'
+      }
+
+      def self.get_platform_args(params, args_map)
+        platform_args = []
+        args_map.each do |action_key, cli_param|
+          param_value = params[action_key]
+          unless param_value.empty?
+            platform_args << "--#{cli_param}=\"#{param_value}\""
+          end
+        end
+
+        return platform_args.join(' ')
       end
+
+      def self.get_android_args(params)
+        if params[:key_password].empty?
+          params[:key_password] = params[:keystore_password]
+        end
+
+        return self.get_platform_args(params, ANDROID_ARGS_MAP)
+      end
+
+      def self.get_ios_args(params)
+        app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+        params[:provisioning_profile] ||=
+          ENV['SIGH_UUID'] ||
+          ENV["sigh_#{app_identifier}_#{params[:type]}"] ||
+          ''
+        return self.get_platform_args(params, IOS_ARGS_MAP)
+      end
+
+      def self.check_platform(platform)
+        if platform && !File.directory?("./platforms/#{platform}")
+          sh "cordova platform add #{platform}"
+        end
+      end
+
+      def self.get_app_name()
+        config = REXML::Document.new(File.open('config.xml'))
+        return config.elements['widget'].elements['name'].first.value
+      end
+
+      def self.build(params)
+        prod = params[:release] ? 'release' : 'debug'
+        device = params[:device] ? ' --device' : ''
+        android_args = self.get_android_args(params)
+        ios_args = self.get_ios_args(params)
+
+        sh "cordova build #{params[:platform]} --#{prod}#{device} #{ios_args} -- #{android_args}"
+      end
+
+      def self.set_build_paths()
+        app_name = self.get_app_name()
+
+        ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH'] = "./platforms/android/build/outputs/apk/android-release.apk"
+        ENV['CORDOVA_IOS_RELEASE_BUILD_PATH'] = "./platforms/ios/build/device/#{app_name}.ipa"
+      end
+
+      def self.run(params)
+        self.check_platform(params[:platform])
+        self.build(params)
+        self.set_build_paths()
+      end
+
+      #####################################################
+      # @!group Documentation
+      #####################################################
 
       def self.description
         "Build your Cordova app"
       end
 
-      def self.authors
-        ["Almouro"]
-      end
-
-      def self.return_value
-        # If your method provides a return value, you can describe here what it does
-      end
-
       def self.details
-        # Optional:
-        "Easily integrate your Cordova app into a Fastlane setup"
+        "Easily integrate your cordova build into a Fastlane setup"
       end
 
       def self.available_options
         [
-          # FastlaneCore::ConfigItem.new(key: :your_option,
-          #                         env_name: "CORDOVA_YOUR_OPTION",
-          #                      description: "A description of your option",
-          #                         optional: false,
-          #                             type: String)
+          FastlaneCore::ConfigItem.new(
+            key: :platform,
+            env_name: "CORDOVA_PLATFORM",
+            description: "Platform to build on. Should be either android or ios",
+            is_string: true,
+            default_value: '',
+            verify_block: proc do |value|
+              UI.user_error!("Platform should be either android or ios") unless ['', 'android', 'ios'].include? value
+            end
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :release,
+            env_name: "CORDOVA_RELEASE",
+            description: "Build for release",
+            is_string: false,
+            default_value: true,
+            verify_block: proc do |value|
+              UI.user_error!("Release should be boolean") unless [false, true].include? value
+            end
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :device,
+            env_name: "CORDOVA_DEVICE",
+            description: "Build for device",
+            is_string: false,
+            default_value: true,
+            verify_block: proc do |value|
+              UI.user_error!("Device should be boolean") unless [false, true].include? value
+            end
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :type,
+            env_name: "CORDOVA_IOS_PACKAGE_TYPE",
+            description: "This will determine what type of build is generated by Xcode. Valid options are development, enterprise, ad-hoc, and app-store",
+            is_string: true,
+            default_value: 'app-store',
+            verify_block: proc do |value|
+              UI.user_error!("Valid options are development, enterprise, ad-hoc, and app-store.") unless ['development', 'enterprise', 'ad-hoc', 'app-store'].include? value
+            end
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :team_id,
+            env_name: "CORDOVA_IOS_TEAM_ID",
+            description: "The development team (Team ID) to use for code signing",
+            is_string: true,
+            default_value: CredentialsManager::AppfileConfig.try_fetch_value(:team_id)
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :provisioning_profile,
+            env_name: "CORDOVA_IOS_PROVISIONING_PROFILE",
+            description: "GUID of the provisioning profile to be used for signing",
+            is_string: true,
+            default_value: ''
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :keystore_path,
+            env_name: "CORDOVA_ANDROID_KEYSTORE_PATH",
+            description: "Path to the Keystore for Android",
+            is_string: true,
+            default_value: ''
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :keystore_password,
+            env_name: "CORDOVA_ANDROID_KEYSTORE_PASSWORD",
+            description: "Android Keystore password",
+            is_string: true,
+            default_value: ''
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :key_password,
+            env_name: "CORDOVA_ANDROID_KEY_PASSWORD",
+            description: "Android Key password (default is keystore password)",
+            is_string: true,
+            default_value: ''
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :keystore_alias,
+            env_name: "CORDOVA_ANDROID_KEYSTORE_ALIAS",
+            description: "Android Keystore alias",
+            is_string: true,
+            default_value: ''
+          )
         ]
       end
 
+      def self.output
+        [
+          ['CORDOVA_ANDROID_RELEASE_BUILD_PATH', 'Path to the signed release APK if it was generated'],
+          ['CORDOVA_IOS_RELEASE_BUILD_PATH', 'Path to the signed release IPA if it was generated']
+        ]
+      end
+
+      def self.authors
+        ['almouro']
+      end
+
       def self.is_supported?(platform)
-        # Adjust this if your plugin only works for a particular platform (iOS vs. Android, for example)
-        # See: https://github.com/fastlane/fastlane/blob/master/fastlane/docs/Platforms.md
-        #
-        # [:ios, :mac, :android].include?(platform)
         true
+      end
+
+      def self.example_code
+        [
+          "cordova(
+            platform: 'ios'
+          )",
+          "cordova(
+            platform: 'android',
+            keystore_path: './staging.keystore',
+            keystore_alias: 'alias_name',
+            keystore_password: 'store_password'
+          )"
+        ]
+      end
+
+      def self.category
+        :building
       end
     end
   end

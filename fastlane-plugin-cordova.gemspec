@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = %q{contact@almouro.com}
 
   spec.summary       = %q{Build your Cordova app}
-  # spec.homepage      = "https://github.com/<GITHUB_USERNAME>/fastlane-plugin-cordova"
+  spec.homepage      = "https://github.com/almouro/fastlane-plugin-cordova"
   spec.license       = "MIT"
 
   spec.files         = Dir["lib/**/*"] + %w(README.md LICENSE)

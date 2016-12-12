@@ -19,7 +19,7 @@ platform :ios do
   lane :deploy do
     match(type: "appstore")
     cordova(platform: 'ios')
-    appstore(ipa: ENV('CORDOVA_IOS_RELEASE_BUILD_PATH'))
+    appstore(ipa: ENV['CORDOVA_IOS_RELEASE_BUILD_PATH'])
   end
 end
 
@@ -33,7 +33,7 @@ platform :android do
       keystore_alias: 'prod',
       keystore_password: 'password'
     )
-    supply(apk: ENV('CORDOVA_ANDROID_RELEASE_BUILD_PATH'))
+    supply(apk: ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH'])
   end
 end
 ```

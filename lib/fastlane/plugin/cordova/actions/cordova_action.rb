@@ -41,10 +41,11 @@ module Fastlane
 
       def self.get_ios_args(params)
         app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
-        params[:provisioning_profile] ||=
-          ENV['SIGH_UUID'] ||
-          ENV["sigh_#{app_identifier}_#{params[:type]}"] ||
-          ''
+
+        if params[:provisioning_profile].empty?
+          params[:provisioning_profile] = ENV['SIGH_UUID'] || ENV["sigh_#{app_identifier}_#{params[:type]}"]
+        end
+
         return self.get_platform_args(params, IOS_ARGS_MAP)
       end
 

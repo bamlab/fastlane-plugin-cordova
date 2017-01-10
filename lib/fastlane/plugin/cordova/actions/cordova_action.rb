@@ -43,7 +43,7 @@ module Fastlane
         app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
 
         if params[:provisioning_profile].empty?
-          params[:provisioning_profile] = ENV['SIGH_UUID'] || ENV["sigh_#{app_identifier}_#{params[:type].sub ! "-" ""}"]
+          params[:provisioning_profile] = ENV['SIGH_UUID'] || ENV["sigh_#{app_identifier}_#{params[:type].sub("-","")}"]
         end
 
         if params[:type] == 'adhoc'

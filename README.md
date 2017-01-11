@@ -41,9 +41,9 @@ end
 with an `Appfile` such as
 
 ```ruby
-app_identifier com.awesome.app
-apple_id apple@id.com
-team_id 28323HT
+app_identifier "com.awesome.app"
+apple_id "apple@id.com"
+team_id "28323HT"
 ```
 
 ## Run tests for this plugin

@@ -2,6 +2,11 @@
 
 [![fastlane Plugin Badge](https://rawcdn.githack.com/fastlane/fastlane/master/fastlane/assets/plugin-badge.svg)](https://rubygems.org/gems/fastlane-plugin-cordova)
 
+## Features
+
+- Build your Cordova project inside a lane
+- Automatically handle code signing on iOS, even for XCode 8
+
 ## Getting Started
 
 This project is a [fastlane](https://github.com/fastlane/fastlane) plugin. To get started with `fastlane-plugin-cordova`, add it to your project by running:
@@ -44,6 +49,13 @@ with an `Appfile` such as
 app_identifier "com.awesome.app"
 apple_id "apple@id.com"
 team_id "28323HT"
+```
+
+## Plugin API
+
+To check what's available in the plugin, install it in a project and run at the root of the project:
+```
+fastlane actions cordova
 ```
 
 ## Run tests for this plugin

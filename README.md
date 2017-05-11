@@ -51,6 +51,16 @@ apple_id "apple@id.com"
 team_id "28323HT"
 ```
 
+If using **Crosswalk**, replace `supply(apk: ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH'])` by:
+```
+supply(
+  apk_paths: [
+   'platforms/android/build/outputs/apk/android-armv7-release.apk', 
+   'platforms/android/build/outputs/apk/android-x86-release.apk'
+  ],
+)
+```
+
 ## Plugin API
 
 To check what's available in the plugin, install it in a project and run at the root of the project:

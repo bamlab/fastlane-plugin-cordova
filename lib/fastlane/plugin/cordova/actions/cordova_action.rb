@@ -10,21 +10,23 @@ module Fastlane
         keystore_path: 'keystore',
         keystore_password: 'storePassword',
         key_password: 'password',
-        keystore_alias: 'alias'
+        keystore_alias: 'alias',
+        build_number: 'versionCode'
       }
 
       IOS_ARGS_MAP = {
         type: 'packageType',
         team_id: 'developmentTeam',
-        provisioning_profile: 'provisioningProfile'
+        provisioning_profile: 'provisioningProfile',
+        build_number: 'CFBundleVersion'
       }
 
       def self.get_platform_args(params, args_map)
         platform_args = []
         args_map.each do |action_key, cli_param|
           param_value = params[action_key]
-          unless param_value.empty?
-            platform_args << "--#{cli_param}=\"#{param_value}\""
+          unless param_value.to_s.empty?
+            platform_args << "--#{cli_param}=#{Shellwords.escape(param_value)}"
           end
         end
 
@@ -70,8 +72,8 @@ module Fastlane
       def self.build(params)
         prod = params[:release] ? 'release' : 'debug'
         device = params[:device] ? ' --device' : ''
-        android_args = self.get_android_args(params)
-        ios_args = self.get_ios_args(params)
+        android_args = self.get_android_args(params) if params[:platform].to_s == 'android'
+        ios_args = self.get_ios_args(params) if params[:platform].to_s == 'ios'
 
         sh "cordova build #{params[:platform]} --#{prod}#{device} #{ios_args} -- #{android_args}"
       end
@@ -79,7 +81,7 @@ module Fastlane
       def self.set_build_paths(is_release)
         app_name = self.get_app_name()
         build_type = is_release ? 'release' : 'debug'
-        
+
         ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH'] = "./platforms/android/build/outputs/apk/android-#{build_type}.apk"
         ENV['CORDOVA_IOS_RELEASE_BUILD_PATH'] = "./platforms/ios/build/device/#{app_name}.ipa"
       end
@@ -185,6 +187,14 @@ module Fastlane
             description: "Android Keystore alias",
             is_string: true,
             default_value: ''
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :build_number,
+            env_name: "CORDOVA_BUILD_NUMBER",
+            description: "Build Number for iOS and Android Keystore alias",
+            default_value: 0,
+            is_string: false,
+            type: Numeric
           )
         ]
       end

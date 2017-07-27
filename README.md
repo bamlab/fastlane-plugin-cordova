@@ -25,7 +25,7 @@ platform :ios do
     cert
     sigh
     gym(
-       scheme: "WheelChair88"
+       scheme: "SCHMEA_NAME"
     )
     testflight
     cordova(platform: 'ios') 
@@ -39,10 +39,9 @@ platform :android do
     #gradle(task: "assembleRelease")
      cordova(
       platform: 'android',
-      keystore_path: './config/wheelchair88.keystore',
-      keystore_alias: 'wheelchair88',
-      keystore_password: 'Hopeti11end',
-      team_id:'KH5K2MDBCK'
+      keystore_path: './prod.keystore',
+      keystore_alias: 'prod',
+      keystore_password: 'password'
     )
     # Cordova Fastlane Plugin
     supply(apk: ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH'])

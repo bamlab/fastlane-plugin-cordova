@@ -17,6 +17,38 @@ fastlane add_plugin cordova
 
 Then you can integrate it into your Fastlane setup:
 
+## Beta version
+```ruby
+platform :ios do
+  desc "Deploy new beta build"
+  lane :beta do
+    cert
+    sigh
+    gym(
+       scheme: "SCHMEA_NAME"
+    )
+    testflight
+    cordova(platform: 'ios') 
+    appstore(ipa: ENV['CORDOVA_IOS_RELEASE_BUILD_PATH'])
+  end
+end
+
+platform :android do
+  desc "Submit a new Beta Build"
+  lane :beta do
+    #gradle(task: "assembleRelease")
+     cordova(
+      platform: 'android',
+      keystore_path: './prod.keystore',
+      keystore_alias: 'prod',
+      keystore_password: 'password'
+    )
+    # Cordova Fastlane Plugin
+    supply(apk: ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH'])
+  end 
+end
+```
+## Alpha version
 ```ruby
 platform :ios do
   desc "Deploy ios app on the appstore"

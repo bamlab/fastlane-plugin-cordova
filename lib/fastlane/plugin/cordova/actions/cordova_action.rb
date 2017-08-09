@@ -18,7 +18,6 @@ module Fastlane
         type: 'packageType',
         team_id: 'developmentTeam',
         provisioning_profile: 'provisioningProfile',
-        build_number: 'CFBundleVersion'
       }
 
       def self.get_platform_args(params, args_map)
@@ -74,6 +73,17 @@ module Fastlane
         device = params[:device] ? ' --device' : ''
         android_args = self.get_android_args(params) if params[:platform].to_s == 'android'
         ios_args = self.get_ios_args(params) if params[:platform].to_s == 'ios'
+
+        if params[:platform].to_s == 'ios' && !params[:build_number].to_s.empty?
+          cf_bundle_version = params[:build_number].to_s
+          Actions::UpdateInfoPlistAction.run(
+            xcodeproj: "./platforms/ios/#{self.get_app_name}.xcodeproj",
+            plist_path: "#{self.get_app_name}/#{self.get_app_name}-Info.plist",
+            block: lambda { |plist|
+              plist['CFBundleVersion'] = cf_bundle_version
+            }
+          )
+        end
 
         sh "cordova build #{params[:platform]} --#{prod}#{device} #{ios_args} -- #{android_args}"
       end

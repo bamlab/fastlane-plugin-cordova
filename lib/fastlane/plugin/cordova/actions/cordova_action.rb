@@ -70,12 +70,13 @@ module Fastlane
       end
 
       def self.build(params)
-        prod = params[:release] ? 'release' : 'debug'
-        device = params[:device] ? ' --device' : ''
+        args = [params[:release] ? '--release' : '--debug']
+        args << '--device' if params[:device]
+        args << '--browserify' if params[:browserify]
         android_args = self.get_android_args(params) if params[:platform].to_s == 'android'
         ios_args = self.get_ios_args(params) if params[:platform].to_s == 'ios'
 
-        sh "cordova build #{params[:platform]} --#{prod}#{device} #{ios_args} -- #{android_args}"
+        sh "cordova build #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}"
       end
 
       def self.set_build_paths(is_release)
@@ -194,6 +195,13 @@ module Fastlane
             description: "Build Number for iOS and Android Keystore alias",
             optional: true,
             is_string: false,
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :browserify,
+            env_name: "CORDOVA_BROWSERIFY",
+            description: "Specifies whether to browserify build or not",
+            default_value: false,
+            is_string: false
           )
         ]
       end

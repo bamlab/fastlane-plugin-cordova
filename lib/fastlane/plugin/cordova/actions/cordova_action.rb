@@ -18,7 +18,6 @@ module Fastlane
         type: 'packageType',
         team_id: 'developmentTeam',
         provisioning_profile: 'provisioningProfile',
-        build_number: 'CFBundleVersion'
       }
 
       def self.get_platform_args(params, args_map)
@@ -76,7 +75,22 @@ module Fastlane
         android_args = self.get_android_args(params) if params[:platform].to_s == 'android'
         ios_args = self.get_ios_args(params) if params[:platform].to_s == 'ios'
 
-        sh "cordova build #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}"
+        if params[:cordova_prepare]
+          sh "cordova prepare #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}"
+        end
+
+        if params[:platform].to_s == 'ios' && !params[:build_number].to_s.empty?
+          cf_bundle_version = params[:build_number].to_s
+          Actions::UpdateInfoPlistAction.run(
+            xcodeproj: "./platforms/ios/#{self.get_app_name}.xcodeproj",
+            plist_path: "#{self.get_app_name}/#{self.get_app_name}-Info.plist",
+            block: lambda { |plist|
+              plist['CFBundleVersion'] = cf_bundle_version
+            }
+          )
+        end
+
+        sh "cordova compile #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}"
       end
 
       def self.set_build_paths(is_release)
@@ -201,6 +215,13 @@ module Fastlane
             env_name: "CORDOVA_BROWSERIFY",
             description: "Specifies whether to browserify build or not",
             default_value: false,
+            is_string: false
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :cordova_prepare,
+            env_name: "CORDOVA_PREPARE",
+            description: "Specifies whether to run `cordova prepare` before building",
+            default_value: true,
             is_string: false
           )
         ]

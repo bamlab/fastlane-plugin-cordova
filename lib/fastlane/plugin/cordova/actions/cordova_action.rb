@@ -134,7 +134,7 @@ module Fastlane
           FastlaneCore::ConfigItem.new(
             key: :release,
             env_name: "CORDOVA_RELEASE",
-            description: "Build for release",
+            description: "Build for release if true, or for debug if false.",
             is_string: false,
             default_value: true,
             verify_block: proc do |value|

@@ -3,7 +3,7 @@ platform :ios do
 
   lane :deploy do
     match(type: "appstore")
-    cordova(platform: 'ios')
+    ionic(platform: 'ios')
     appstore(ipa: ENV('CORDOVA_IOS_RELEASE_BUILD_PATH'))
   end
 end
@@ -12,7 +12,7 @@ platform :android do
   desc "Deploy android app on play store"
 
   lane :deploy do
-    cordova(
+    ionic(
       platform: 'android',
       keystore_path: './prod.keystore',
       keystore_alias: 'prod',

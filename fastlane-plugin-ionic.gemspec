@@ -1,16 +1,16 @@
 # coding: utf-8
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'fastlane/plugin/cordova/version'
+require 'fastlane/plugin/ionic/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'fastlane-plugin-cordova'
-  spec.version       = Fastlane::Cordova::VERSION
-  spec.author        = %q{Almouro}
-  spec.email         = %q{contact@almouro.com}
+  spec.name          = 'fastlane-plugin-ionic'
+  spec.version       = Fastlane::Ionic::VERSION
+  spec.author        = %q{Jan Piotrowski}
+  spec.email         = %q{piotrowski+rubygems@gmail.com}
 
-  spec.summary       = %q{Build your Cordova app}
-  spec.homepage      = "https://github.com/almouro/fastlane-plugin-cordova"
+  spec.summary       = %q{Build your Ionic app}
+  spec.homepage      = "https://github.com/janpio/fastlane-plugin-ionic"
   spec.license       = "MIT"
 
   spec.files         = Dir["lib/**/*"] + %w(README.md LICENSE)

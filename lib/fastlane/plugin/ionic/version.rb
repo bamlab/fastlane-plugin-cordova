@@ -1,5 +1,5 @@
 module Fastlane
-  module Cordova
+  module Ionic
     VERSION = "0.3.4"
   end
 end

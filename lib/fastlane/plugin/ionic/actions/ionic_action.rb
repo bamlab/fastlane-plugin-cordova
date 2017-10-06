@@ -5,7 +5,7 @@ module Fastlane
       CORDOVA_ANDROID_RELEASE_BUILD_PATH = :CORDOVA_ANDROID_RELEASE_BUILD_PATH
     end
 
-    class CordovaAction < Action
+    class IonicAction < Action
       ANDROID_ARGS_MAP = {
         keystore_path: 'keystore',
         keystore_password: 'storePassword',
@@ -59,7 +59,7 @@ module Fastlane
 
       def self.check_platform(platform)
         if platform && !File.directory?("./platforms/#{platform}")
-          sh "cordova platform add #{platform}"
+          sh "ionic cordova platform add #{platform}"
         end
       end
 
@@ -76,7 +76,7 @@ module Fastlane
         ios_args = self.get_ios_args(params) if params[:platform].to_s == 'ios'
 
         if params[:cordova_prepare]
-          sh "cordova prepare #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}"
+          sh "ionic cordova prepare #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}"
         end
 
         if params[:platform].to_s == 'ios' && !params[:build_number].to_s.empty?
@@ -90,7 +90,7 @@ module Fastlane
           )
         end
 
-        sh "cordova compile #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}"
+        sh "ionic cordova compile #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}"
       end
 
       def self.set_build_paths(is_release)
@@ -112,11 +112,11 @@ module Fastlane
       #####################################################
 
       def self.description
-        "Build your Cordova app"
+        "Build your Ionic app"
       end
 
       def self.details
-        "Easily integrate your cordova build into a Fastlane setup"
+        "Easily integrate your Ionic build into a Fastlane setup"
       end
 
       def self.available_options
@@ -220,7 +220,7 @@ module Fastlane
           FastlaneCore::ConfigItem.new(
             key: :cordova_prepare,
             env_name: "CORDOVA_PREPARE",
-            description: "Specifies whether to run `cordova prepare` before building",
+            description: "Specifies whether to run `ionic cordova prepare` before building",
             default_value: true,
             is_string: false
           )
@@ -244,10 +244,10 @@ module Fastlane
 
       def self.example_code
         [
-          "cordova(
+          "ionic(
             platform: 'ios'
           )",
-          "cordova(
+          "ionic(
             platform: 'android',
             keystore_path: './staging.keystore',
             keystore_alias: 'alias_name',

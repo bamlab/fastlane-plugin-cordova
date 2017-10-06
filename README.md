@@ -1,8 +1,8 @@
 # Ionic Plugin
 
-[![fastlane Plugin Badge](https://rawcdn.githack.com/fastlane/fastlane/master/fastlane/assets/plugin-badge.svg)](https://rubygems.org/gems/fastlane-plugin-cordova)
+[![fastlane Plugin Badge](https://rawcdn.githack.com/fastlane/fastlane/master/fastlane/assets/plugin-badge.svg)](https://rubygems.org/gems/fastlane-plugin-ionic)
 
-> Work in Progress: Right now this is just a fork of the Cordova plugin. I will change it, so it will use the `ionic` CLI and also support all options of `ionic cordova build`.
+> Work in Progress: This is a simple fork of the fastlane cordova plugin with "cordova" replaced with "ionic". It is not tested yet at all. Soon it will support all options of `ionic cordova build`.
 
 ## Features
 
@@ -10,10 +10,10 @@
 
 ## Getting Started
 
-This project is a [fastlane](https://github.com/fastlane/fastlane) plugin. To get started with `fastlane-plugin-cordova`, add it to your project by running:
+This project is a [fastlane](https://github.com/fastlane/fastlane) plugin. To get started with `fastlane-plugin-ionic`, add it to your project by running:
 
 ```bash
-fastlane add_plugin cordova
+fastlane add_plugin ionic
 ```
 
 Then you can integrate it into your Fastlane setup:
@@ -24,7 +24,7 @@ platform :ios do
 
   lane :deploy do
     match(type: "appstore")
-    cordova(platform: 'ios')
+    ionic(platform: 'ios')
     appstore(ipa: ENV['CORDOVA_IOS_RELEASE_BUILD_PATH'])
   end
 end
@@ -33,7 +33,7 @@ platform :android do
   desc "Deploy android app on play store"
 
   lane :deploy do
-    cordova(
+    ionic(
       platform: 'android',
       keystore_path: './prod.keystore',
       keystore_alias: 'prod',
@@ -66,7 +66,7 @@ supply(
 
 To check what's available in the plugin, install it in a project and run at the root of the project:
 ```
-fastlane actions cordova
+fastlane actions ionic
 ```
 
 Which will produce:

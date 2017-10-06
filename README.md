@@ -1,11 +1,12 @@
-# Cordova Plugin
+# Ionic Plugin
 
 [![fastlane Plugin Badge](https://rawcdn.githack.com/fastlane/fastlane/master/fastlane/assets/plugin-badge.svg)](https://rubygems.org/gems/fastlane-plugin-cordova)
 
+> Work in Progress: Right now this is just a fork of the Cordova plugin. I will change it, so it will use the `ionic` CLI and also support all options of `ionic cordova build`.
+
 ## Features
 
-- Build your Cordova project inside a lane
-- Automatically handle code signing on iOS, even for XCode 8
+- Build your Ionic project inside a lane
 
 ## Getting Started
 

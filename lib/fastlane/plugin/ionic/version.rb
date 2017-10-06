@@ -1,5 +1,5 @@
 module Fastlane
   module Ionic
-    VERSION = "0.3.4"
+    VERSION = "0.0.1"
   end
 end

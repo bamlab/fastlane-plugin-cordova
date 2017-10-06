@@ -206,7 +206,7 @@ module Fastlane
           FastlaneCore::ConfigItem.new(
             key: :build_number,
             env_name: "CORDOVA_BUILD_NUMBER",
-            description: "Build Number for iOS and Android Keystore alias",
+            description: "Build Number for iOS",
             optional: true,
             is_string: false,
           ),

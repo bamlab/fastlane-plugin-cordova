@@ -1,12 +1,10 @@
-# Ionic Plugin
+# _fastlane_ Plugin for Ionic CLI
 
-[![fastlane Plugin Badge](https://rawcdn.githack.com/fastlane/fastlane/master/fastlane/assets/plugin-badge.svg)](https://rubygems.org/gems/fastlane-plugin-ionic)
+[![fastlane Plugin Badge](https://rawcdn.githack.com/fastlane/fastlane/master/fastlane/assets/plugin-badge.svg)](https://rubygems.org/gems/fastlane-plugin-ionic) [![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://github.com/ionic-zone/fastlane-plugin-ionic/blob/master/LICENSE)
+[![Gem](https://img.shields.io/gem/v/fastlane-plugin-ionic.svg?style=flat)](http://rubygems.org/gems/fastlane-plugin-ionic)
 
-> Work in Progress: This is a simple fork of the fastlane cordova plugin with "cordova" replaced with "ionic". It is not tested yet at all. Soon it will support all options of `ionic cordova build`.
-
-## Features
-
-- Build your Ionic project inside a lane
+This _fastlane_ plugin lets you run the [Ionic Command line tool](https://ionicframework.com/docs/cli/), `ionic`, in a lane.  
+It is based on [fastlane-plugin-cordova](https://github.com/bamlab/fastlane-plugin-cordova) (where it borrows basically all its code).
 
 ## Getting Started
 
@@ -16,7 +14,26 @@ This project is a [fastlane](https://github.com/fastlane/fastlane) plugin. To ge
 fastlane add_plugin ionic
 ```
 
-Then you can integrate it into your Fastlane setup:
+## Actions
+
+### `ionic`
+
+Run `ionic cordova build` to build your Ionic project.
+
+```ruby
+ionic(
+  platform: 'ios', # Build your iOS Ionic project
+) 
+ionic(
+  platform: 'android', # Build your Android Ionic project
+  release: false # Build a "Debug" app
+) 
+```
+
+
+## Examples
+
+Lanes using these actions could look like this:
 
 ```ruby
 platform :ios do
@@ -52,7 +69,7 @@ apple_id "apple@id.com"
 team_id "28323HT"
 ```
 
-If using **Crosswalk**, replace `supply(apk: ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH'])` by:
+If you're using **Crosswalk**, replace `supply(apk: ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH'])` (and equivalents) by:
 ```
 supply(
   apk_paths: [

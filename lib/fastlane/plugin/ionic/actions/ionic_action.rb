@@ -84,8 +84,9 @@ module Fastlane
         android_args = self.get_android_args(params) if params[:platform].to_s == 'android'
         ios_args = self.get_ios_args(params) if params[:platform].to_s == 'ios'
 
+        # TODO Extract param string for prepare and compile here
         if params[:cordova_prepare]
-          sh "ionic cordova prepare #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}" # TODO only attach set args - makes a nicer command
+          sh "ionic cordova prepare #{params[:platform]} #{args.join(' ')} -- #{ios_args} -- -- #{android_args}" # TODO only attach set args - makes a nicer command
         end
 
         if params[:platform].to_s == 'ios' && !params[:build_number].to_s.empty?
@@ -99,7 +100,7 @@ module Fastlane
           )
         end
 
-        sh "ionic cordova compile #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}" # TODO only attach set args - makes a nicer command
+        sh "ionic cordova compile #{params[:platform]} #{args.join(' ')} -- #{ios_args} -- -- #{android_args}" # TODO only attach set args - makes a nicer command
       end
 
       # export build paths (run #3)

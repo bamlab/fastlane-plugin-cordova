@@ -63,8 +63,8 @@ module Fastlane
         return self.get_platform_args(params, IOS_ARGS_MAP)
       end
 
-      def self.check_platform(platform)
       # add cordova platform if missing (run #1)
+      def self.check_and_add_platform(platform)
         if platform && !File.directory?("./platforms/#{platform}")
           sh "ionic cordova platform add #{platform}"
         end
@@ -114,7 +114,7 @@ module Fastlane
       end
 
       def self.run(params)
-        self.check_platform(params[:platform])
+        self.check_and_add_platform(params[:platform])
         self.build(params)
         self.set_build_paths(params[:release])
       end

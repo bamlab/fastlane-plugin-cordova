@@ -6,7 +6,6 @@ module Fastlane
     end
 
     class IonicAction < Action
-
       # valid action params
 
       ANDROID_ARGS_MAP = {
@@ -20,7 +19,7 @@ module Fastlane
       IOS_ARGS_MAP = {
         type: 'packageType',
         team_id: 'developmentTeam',
-        provisioning_profile: 'provisioningProfile',
+        provisioning_profile: 'provisioningProfile'
       }
 
       # do rewriting and copying of action params
@@ -50,7 +49,7 @@ module Fastlane
         app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
 
         if params[:provisioning_profile].empty?
-          params[:provisioning_profile] = ENV['SIGH_UUID'] || ENV["sigh_#{app_identifier}_#{params[:type].sub("-","")}"] # TODO What does this do? Does it also work for `match`?
+          params[:provisioning_profile] = ENV['SIGH_UUID'] || ENV["sigh_#{app_identifier}_#{params[:type].sub('-', '')}"] # TODO: What does this do? Does it also work for `match`?
         end
 
         if params[:type] == 'adhoc'
@@ -71,9 +70,9 @@ module Fastlane
       end
 
       # app_name
-      def self.get_app_name()
+      def self.get_app_name
         config = REXML::Document.new(File.open('config.xml'))
-        return config.elements['widget'].elements['name'].first.value # TODO Simplify!? (Check logic in cordova)
+        return config.elements['widget'].elements['name'].first.value # TODO: Simplify!? (Check logic in cordova)
       end
 
       # actual building! (run #2)
@@ -84,9 +83,9 @@ module Fastlane
         android_args = self.get_android_args(params) if params[:platform].to_s == 'android'
         ios_args = self.get_ios_args(params) if params[:platform].to_s == 'ios'
 
-        # TODO Extract param string for prepare and compile here
+        # TODO: Extract param string for prepare and compile here
         if params[:cordova_prepare]
-          sh "ionic cordova prepare #{params[:platform]} #{args.join(' ')} -- #{ios_args} -- -- #{android_args}" # TODO only attach set args - makes a nicer command
+          sh "ionic cordova prepare #{params[:platform]} #{args.join(' ')} -- #{ios_args} -- -- #{android_args}" # TODO: only attach set args - makes a nicer command
         end
 
         if params[:platform].to_s == 'ios' && !params[:build_number].to_s.empty?
@@ -100,18 +99,18 @@ module Fastlane
           )
         end
 
-        sh "ionic cordova compile #{params[:platform]} #{args.join(' ')} -- #{ios_args} -- -- #{android_args}" # TODO only attach set args - makes a nicer command
+        sh "ionic cordova compile #{params[:platform]} #{args.join(' ')} -- #{ios_args} -- -- #{android_args}" # TODO: only attach set args - makes a nicer command
       end
 
       # export build paths (run #3)
       def self.set_build_paths(is_release)
-        app_name = self.get_app_name()
+        app_name = self.get_app_name
         build_type = is_release ? 'release' : 'debug'
 
         ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH'] = "./platforms/android/build/outputs/apk/android-#{build_type}.apk"
         ENV['CORDOVA_IOS_RELEASE_BUILD_PATH'] = "./platforms/ios/build/device/#{app_name}.ipa"
 
-        # TODO https://github.com/bamlab/fastlane-plugin-cordova/issues/7
+        # TODO: https://github.com/bamlab/fastlane-plugin-cordova/issues/7
       end
 
       def self.run(params)
@@ -221,7 +220,7 @@ module Fastlane
             env_name: "CORDOVA_BUILD_NUMBER",
             description: "Build Number for iOS",
             optional: true,
-            is_string: false,
+            is_string: false
           ),
           FastlaneCore::ConfigItem.new(
             key: :browserify,

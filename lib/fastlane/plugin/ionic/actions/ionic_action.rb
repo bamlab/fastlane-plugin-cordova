@@ -247,7 +247,7 @@ module Fastlane
       end
 
       def self.authors
-        ['almouro']
+        ['Jan Piotrowski']
       end
 
       def self.is_supported?(platform)

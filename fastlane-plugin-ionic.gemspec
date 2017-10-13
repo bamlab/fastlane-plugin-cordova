@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = %q{piotrowski+rubygems@gmail.com}
 
   spec.summary       = %q{Build your Ionic app}
-  spec.homepage      = "https://github.com/janpio/fastlane-plugin-ionic"
+  spec.homepage      = "https://github.com/ionic-zone/fastlane-plugin-ionic"
   spec.license       = "MIT"
 
   spec.files         = Dir["lib/**/*"] + %w(README.md LICENSE)

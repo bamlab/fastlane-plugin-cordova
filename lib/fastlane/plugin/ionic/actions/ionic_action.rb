@@ -83,11 +83,12 @@ module Fastlane
         android_args = self.get_android_args(params) if params[:platform].to_s == 'android'
         ios_args = self.get_ios_args(params) if params[:platform].to_s == 'ios'
 
-        # TODO: Extract param string for prepare and compile here
         if params[:cordova_prepare]
-          sh "ionic cordova prepare #{params[:platform]} #{args.join(' ')} -- #{ios_args} -- -- #{android_args}" # TODO: only attach set args - makes a nicer command
+          # TODO: Remove params not allowed/used for `prepare`
+          sh "ionic cordova prepare #{params[:platform]} #{args.join(' ')}"
         end
 
+        # special handling for `build_number` param
         if params[:platform].to_s == 'ios' && !params[:build_number].to_s.empty?
           cf_bundle_version = params[:build_number].to_s
           Actions::UpdateInfoPlistAction.run(
@@ -99,7 +100,8 @@ module Fastlane
           )
         end
 
-        sh "ionic cordova compile #{params[:platform]} #{args.join(' ')} -- #{ios_args} -- -- #{android_args}" # TODO: only attach set args - makes a nicer command
+        # TODO: extract params - only attach correct platform args
+        sh "ionic cordova compile #{params[:platform]} #{args.join(' ')} -- #{ios_args} -- -- #{android_args}" 
       end
 
       # export build paths (run #3)

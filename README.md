@@ -3,8 +3,9 @@
 [![fastlane Plugin Badge](https://rawcdn.githack.com/fastlane/fastlane/master/fastlane/assets/plugin-badge.svg)](https://rubygems.org/gems/fastlane-plugin-ionic) [![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://github.com/ionic-zone/fastlane-plugin-ionic/blob/master/LICENSE)
 [![Gem](https://img.shields.io/gem/v/fastlane-plugin-ionic.svg?style=flat)](http://rubygems.org/gems/fastlane-plugin-ionic)
 
-This _fastlane_ plugin lets you build your Ionic Cordova project via the [Ionic Command line tool](https://ionicframework.com/docs/cli/), `ionic`, and its `ionic cordova build` command in a _fastlane_ lane.  
-It is based on [fastlane-plugin-cordova](https://github.com/bamlab/fastlane-plugin-cordova) (where it borrows most of its code).
+This _fastlane_ plugin helps you build your **Ionic Cordova** project via the [`ionic` CLI](https://ionicframework.com/docs/cli/) and its `ionic cordova build` command.
+
+It is based on [fastlane-plugin-cordova](https://github.com/bamlab/fastlane-plugin-cordova) (where it borrows a lot of its code. Thanks!).
 
 ## Getting Started
 
@@ -18,12 +19,12 @@ fastlane add_plugin ionic
 
 ### `ionic`
 
-Run `ionic cordova build` to build your Ionic project.
+Runs `ionic cordova build` to build your Ionic project.
 
 ```ruby
 ionic(
   platform: 'ios', # Build your iOS Ionic project
-) 
+)
 ionic(
   platform: 'android', # Build your Android Ionic project
   release: false # Build a "Debug" app
@@ -42,7 +43,7 @@ platform :ios do
   lane :deploy do
     match(type: "appstore")
     ionic(platform: 'ios')
-    appstore(ipa: ENV['CORDOVA_IOS_RELEASE_BUILD_PATH'])
+    deliver(ipa: ENV['CORDOVA_IOS_RELEASE_BUILD_PATH'])
   end
 end
 
@@ -70,10 +71,11 @@ team_id "28323HT"
 ```
 
 If you're using **Crosswalk**, replace `supply(apk: ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH'])` (and equivalents) by:
-```
+
+```ruby
 supply(
   apk_paths: [
-   'platforms/android/build/outputs/apk/android-armv7-release.apk', 
+   'platforms/android/build/outputs/apk/android-armv7-release.apk',
    'platforms/android/build/outputs/apk/android-x86-release.apk'
   ],
 )
@@ -82,6 +84,7 @@ supply(
 ## Plugin API
 
 To check what's available in the plugin, install it in a project and run at the root of the project:
+
 ```
 fastlane actions ionic
 ```
@@ -102,7 +105,7 @@ Which will produce:
 | **keystore_alias**       | Android Keystore alias                                  | CORDOVA_ANDROID_KEYSTORE_ALIAS    |           |
 | **build_number**         | Build Number for iOS and Android                        | CORDOVA_BUILD_NUMBER              |           |
 | **browserify**           | Specifies whether to browserify build or not            | CORDOVA_BROWSERIFY                |  *false*  |
-| **cordova_prepare**      | Specifies whether to run `cordova prepare` before building  | CORDOVA_PREPARE               |  *true*   |
+| **cordova_prepare**      | Specifies whether to run `ionic cordova prepare` before building  | CORDOVA_PREPARE               |  *true*   |
 
 ## Run tests for this plugin
 

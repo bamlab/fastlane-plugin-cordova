@@ -4,7 +4,7 @@ platform :ios do
   lane :deploy do
     match(type: "appstore")
     ionic(platform: 'ios')
-    appstore(ipa: ENV('CORDOVA_IOS_RELEASE_BUILD_PATH'))
+    deliver(ipa: ENV('CORDOVA_IOS_RELEASE_BUILD_PATH'))
   end
 end
 

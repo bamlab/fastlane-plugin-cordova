@@ -49,7 +49,8 @@ module Fastlane
         app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
 
         if params[:provisioning_profile].empty?
-          params[:provisioning_profile] = ENV['SIGH_UUID'] || ENV["sigh_#{app_identifier}_#{params[:type].sub('-', '')}"] # TODO: What does this do? Does it also work for `match`?
+          # If `match` or `sigh` were used before this, use the certificates returned from there
+          params[:provisioning_profile] = ENV['SIGH_UUID'] || ENV["sigh_#{app_identifier}_#{params[:type].sub('-', '')}"]
         end
 
         if params[:type] == 'adhoc'

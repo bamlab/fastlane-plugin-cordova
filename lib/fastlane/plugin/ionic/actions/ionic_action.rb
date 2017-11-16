@@ -38,6 +38,7 @@ module Fastlane
       # map action params to the cli param they will be used for
 
       def self.get_android_args(params)
+        # TODO document magic in README
         if params[:key_password].empty?
           params[:key_password] = params[:keystore_password]
         end
@@ -102,8 +103,11 @@ module Fastlane
           )
         end
 
-        # TODO: extract params - only attach correct platform args
-        sh "ionic cordova compile #{params[:platform]} #{args.join(' ')} -- #{ios_args} -- -- #{android_args}" 
+        if params[:platform].to_s == 'ios'
+          sh "ionic cordova compile #{params[:platform]} #{args.join(' ')} -- #{ios_args}" 
+        elsif params[:platform].to_s == 'android'
+          sh "ionic cordova compile #{params[:platform]} #{args.join(' ')} -- -- #{android_args}" 
+        end
       end
 
       # export build paths (run #3)

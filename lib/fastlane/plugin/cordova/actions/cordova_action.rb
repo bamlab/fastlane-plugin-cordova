@@ -229,7 +229,7 @@ module Fastlane
             key: :min_sdk_version,
             env_name: "CORDOVA_ANDROID_MIN_SDK_VERSION",
             description: "Overrides the value of minSdkVersion set in AndroidManifest.xml",
-            default_value: false,
+            default_value: '',
             is_string: false
           )
         ]

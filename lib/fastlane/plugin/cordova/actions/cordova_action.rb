@@ -11,7 +11,8 @@ module Fastlane
         keystore_password: 'storePassword',
         key_password: 'password',
         keystore_alias: 'alias',
-        build_number: 'versionCode'
+        build_number: 'versionCode',
+        min_sdk_version: 'gradleArg=-PcdvMinSdkVersion'
       }
 
       IOS_ARGS_MAP = {
@@ -222,6 +223,13 @@ module Fastlane
             env_name: "CORDOVA_PREPARE",
             description: "Specifies whether to run `cordova prepare` before building",
             default_value: true,
+            is_string: false
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :min_sdk_version,
+            env_name: "CORDOVA_ANDROID_MIN_SDK_VERSION",
+            description: "Overrides the value of minSdkVersion set in AndroidManifest.xml",
+            default_value: '',
             is_string: false
           )
         ]

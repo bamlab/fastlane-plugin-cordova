@@ -105,6 +105,7 @@ Which will produce:
 | **keystore_password**    | Android Keystore password                               | CORDOVA_ANDROID_KEYSTORE_PASSWORD |           |
 | **key_password**         | Android Key password (default is keystore password)     | CORDOVA_ANDROID_KEY_PASSWORD      |           |
 | **keystore_alias**       | Android Keystore alias                                  | CORDOVA_ANDROID_KEYSTORE_ALIAS    |           |
+| **min_sdk_version**      | Overrides the value of minSdkVersion                    | CORDOVA_ANDROID_MIN_SDK_VERSION   |           |
 | **build_number**         | Build Number for iOS and Android                        | CORDOVA_BUILD_NUMBER              |           |
 | **browserify**           | Specifies whether to browserify build or not            | CORDOVA_BROWSERIFY                |  *false*  |
 | **cordova_prepare**      | Specifies whether to run `ionic cordova prepare` before building  | CORDOVA_PREPARE               |  *true*   |

@@ -13,7 +13,8 @@ module Fastlane
         keystore_password: 'storePassword',
         key_password: 'password',
         keystore_alias: 'alias',
-        build_number: 'versionCode'
+        build_number: 'versionCode',
+        min_sdk_version: 'gradleArg=-PcdvMinSdkVersion'
       }
 
       IOS_ARGS_MAP = {

@@ -12,7 +12,8 @@ module Fastlane
         key_password: 'password',
         keystore_alias: 'alias',
         build_number: 'versionCode',
-        min_sdk_version: 'gradleArg=-PcdvMinSdkVersion'
+        min_sdk_version: 'gradleArg=-PcdvMinSdkVersion',
+        cordova_no_fetch: 'cordovaNoFetch'
       }
 
       IOS_ARGS_MAP = {
@@ -58,9 +59,14 @@ module Fastlane
         return self.get_platform_args(params, IOS_ARGS_MAP)
       end
 
-      def self.check_platform(platform)
+      def self.check_platform(params)
+        platform = params[:platform]
         if platform && !File.directory?("./platforms/#{platform}")
-          sh "cordova platform add #{platform}"
+          if params[:cordova_no_fetch]
+            sh "cordova platform add #{platform} --nofetch"
+          else
+            sh "cordova platform add #{platform}"
+          end
         end
       end
 
@@ -103,7 +109,7 @@ module Fastlane
       end
 
       def self.run(params)
-        self.check_platform(params[:platform])
+        self.check_platform(params)
         self.build(params)
         self.set_build_paths(params[:release])
       end
@@ -230,6 +236,13 @@ module Fastlane
             env_name: "CORDOVA_ANDROID_MIN_SDK_VERSION",
             description: "Overrides the value of minSdkVersion set in AndroidManifest.xml",
             default_value: '',
+            is_string: false
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :cordova_no_fetch,
+            env_name: "CORDOVA_NO_FETCH",
+            description: "Call `cordova platform add` with `--nofetch` parameter",
+            default_value: false,
             is_string: false
           )
         ]

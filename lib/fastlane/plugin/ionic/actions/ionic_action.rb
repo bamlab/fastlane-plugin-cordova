@@ -14,7 +14,8 @@ module Fastlane
         key_password: 'password',
         keystore_alias: 'alias',
         build_number: 'versionCode',
-        min_sdk_version: 'gradleArg=-PcdvMinSdkVersion'
+        min_sdk_version: 'gradleArg=-PcdvMinSdkVersion',
+        cordova_no_fetch: 'cordovaNoFetch'
       }
 
       IOS_ARGS_MAP = {
@@ -75,10 +76,14 @@ module Fastlane
         return self.get_platform_args(params, IOS_ARGS_MAP)
       end
 
-      # add cordova platform if missing (run #1)
-      def self.check_and_add_platform(platform)
+      def self.check_platform(params)
+        platform = params[:platform]
         if platform && !File.directory?("./platforms/#{platform}")
-          sh "ionic cordova platform add #{platform}"
+          if params[:cordova_no_fetch]
+            sh "ionic cordova platform add #{platform} --nofetch"
+          else
+            sh "ionic cordova platform add #{platform}"
+          end
         end
       end
 
@@ -133,7 +138,7 @@ module Fastlane
       end
 
       def self.run(params)
-        self.check_and_add_platform(params[:platform])
+        self.check_platform(params)
         self.build(params)
         self.set_build_paths(params[:release])
       end

@@ -15,6 +15,8 @@ This project is a [fastlane](https://github.com/fastlane/fastlane) plugin. To ge
 fastlane add_plugin cordova
 ```
 
+:warning: *If you're using a Cordova version below 7, you need to use version `1.0.1` of this plugin*
+
 Then you can integrate it into your Fastlane setup:
 
 ```ruby

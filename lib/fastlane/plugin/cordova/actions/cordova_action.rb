@@ -20,14 +20,24 @@ module Fastlane
         type: 'packageType',
         team_id: 'developmentTeam',
         provisioning_profile: 'provisioningProfile',
+        build_flag: 'buildFlag'
       }
 
       def self.get_platform_args(params, args_map)
         platform_args = []
         args_map.each do |action_key, cli_param|
           param_value = params[action_key]
-          unless param_value.to_s.empty?
-            platform_args << "--#{cli_param}=#{Shellwords.escape(param_value)}"
+
+          if action_key.to_s == 'build_flag' && param_value.kind_of?(Array)
+            unless param_value.empty?
+              param_value.each do |flag|
+                platform_args << "--#{cli_param}=#{flag.shellescape}"
+              end
+            end
+          else
+            unless param_value.to_s.empty?
+              platform_args << "--#{cli_param}=#{Shellwords.escape(param_value)}"
+            end
           end
         end
 
@@ -244,6 +254,14 @@ module Fastlane
             description: "Call `cordova platform add` with `--nofetch` parameter",
             default_value: false,
             is_string: false
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :build_flag,
+            env_name: "CORDOVA_IOS_BUILD_FLAG",
+            description: "An array of Xcode buildFlag. Will be appended on compile command",
+            is_string: false,
+            optional: true,
+            default_value: []
           )
         ]
       end

@@ -89,6 +89,11 @@ module Fastlane
         args = [params[:release] ? '--release' : '--debug']
         args << '--device' if params[:device]
         args << '--browserify' if params[:browserify]
+
+        if !params[:cordova_build_config_file].to_s.empty?
+          args << "--buildConfig=#{Shellwords.escape(params[:cordova_build_config_file])}"
+        end
+
         android_args = self.get_android_args(params) if params[:platform].to_s == 'android'
         ios_args = self.get_ios_args(params) if params[:platform].to_s == 'ios'
 
@@ -262,6 +267,14 @@ module Fastlane
             is_string: false,
             optional: true,
             default_value: []
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :cordova_build_config_file,
+            env_name: "CORDOVA_BUILD_CONFIG_FILE",
+            description: "Call `cordova compile` with `--buildConfig=<ConfigFile>` to specify build config file path",
+            is_string: true,
+            optional: true,
+            defaultValue: ''
           )
         ]
       end

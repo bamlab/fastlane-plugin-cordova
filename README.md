@@ -90,6 +90,7 @@ Which will produce:
 | **browserify**           | Specifies whether to browserify build or not            | CORDOVA_BROWSERIFY                |  *false*  |
 | **cordova_prepare**      | Specifies whether to run `cordova prepare` before building  | CORDOVA_PREPARE               |  *true*   |
 | **cordova_no_fetch**      | Specifies whether to run `cordova platform add` with `--nofetch` parameter  | CORDOVA_NO_FETCH               |  *false*   |
+| **cordova_build_config_file**      | Call `cordova compile` with `--buildConfig=<ConfigFile>` to specify build config file path  | CORDOVA_BUILD_CONFIG_FILE               |     |
 
 ## Run tests for this plugin
 

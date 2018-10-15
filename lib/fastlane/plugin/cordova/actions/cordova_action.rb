@@ -274,7 +274,7 @@ module Fastlane
             description: "Call `cordova compile` with `--buildConfig=<ConfigFile>` to specify build config file path",
             is_string: true,
             optional: true,
-            defaultValue: ''
+            default_value: ''
           )
         ]
       end

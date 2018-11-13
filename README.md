@@ -3,7 +3,7 @@
 [![fastlane Plugin Badge](https://rawcdn.githack.com/fastlane/fastlane/master/fastlane/assets/plugin-badge.svg)](https://rubygems.org/gems/fastlane-plugin-ionic) [![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://github.com/ionic-zone/fastlane-plugin-ionic/blob/master/LICENSE)
 [![Gem](https://img.shields.io/gem/v/fastlane-plugin-ionic.svg?style=flat)](http://rubygems.org/gems/fastlane-plugin-ionic)
 
-This _fastlane_ plugin helps you build your **Ionic Cordova** project via the [`ionic` CLI](https://ionicframework.com/docs/cli/) and its `ionic cordova build` command.
+This _fastlane_ plugin helps you build your **Ionic Cordova** project via the [`ionic` CLI](https://ionicframework.com/docs/cli/).
 
 It is based on [fastlane-plugin-cordova](https://github.com/bamlab/fastlane-plugin-cordova) (where it borrows a lot of its code. Thanks!).
 
@@ -19,7 +19,7 @@ fastlane add_plugin ionic
 
 ### `ionic`
 
-Runs `ionic cordova build` to build your Ionic project.
+Runs `ionic cordova build` (technically: `ionic cordova prepare` first, then `ionic cordova compile` [which is the same as what `build` does internally]) to build your Ionic project.
 
 ```ruby
 ionic(

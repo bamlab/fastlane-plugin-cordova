@@ -236,7 +236,7 @@ module Fastlane
           FastlaneCore::ConfigItem.new(
             key: :build_number,
             env_name: "CORDOVA_BUILD_NUMBER",
-            description: "Build Number for iOS",
+            description: "Sets the build number for iOS and version code for Android",
             optional: true,
             is_string: false
           ),

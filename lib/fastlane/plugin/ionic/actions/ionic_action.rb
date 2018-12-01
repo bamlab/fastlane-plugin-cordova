@@ -99,6 +99,11 @@ module Fastlane
         args << '--device' if params[:device]
         args << '--prod' if params[:prod]
         args << '--browserify' if params[:browserify]
+
+        if !params[:cordova_build_config_file].to_s.empty?
+          args << "--buildConfig=#{Shellwords.escape(params[:cordova_build_config_file])}"
+        end
+
         android_args = self.get_android_args(params) if params[:platform].to_s == 'android'
         ios_args = self.get_ios_args(params) if params[:platform].to_s == 'ios'
 
@@ -131,7 +136,7 @@ module Fastlane
         app_name = self.get_app_name
         build_type = is_release ? 'release' : 'debug'
 
-        ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH'] = "./platforms/android/build/outputs/apk/android-#{build_type}.apk"
+        ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH'] = "./platforms/android/app/build/outputs/apk/#{build_type}/app-#{build_type}.apk"
         ENV['CORDOVA_IOS_RELEASE_BUILD_PATH'] = "./platforms/ios/build/device/#{app_name}.ipa"
 
         # TODO: https://github.com/bamlab/fastlane-plugin-cordova/issues/7
@@ -291,6 +296,14 @@ module Fastlane
             is_string: false,
             optional: true,
             default_value: []
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :cordova_build_config_file,
+            env_name: "CORDOVA_BUILD_CONFIG_FILE",
+            description: "Call `ionic cordova compile` with `--buildConfig=<ConfigFile>` to specify build config file path",
+            is_string: true,
+            optional: true,
+            default_value: ''
           )
         ]
       end

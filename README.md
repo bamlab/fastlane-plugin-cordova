@@ -70,7 +70,11 @@ apple_id "apple@id.com"
 team_id "28323HT"
 ```
 
-If you're using **Crosswalk**, replace `supply(apk: ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH'])` (and equivalents) by:
+---
+
+The `ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH']` is only valid for `cordova-android` 7.x and newer (which you should be using anyway!).
+
+If you're using **Crosswalk** (which oyu should not really be doing anymore), replace `supply(apk: ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH'])` (and equivalents) by:
 
 ```ruby
 supply(

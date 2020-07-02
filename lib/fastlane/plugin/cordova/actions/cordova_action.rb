@@ -73,9 +73,9 @@ module Fastlane
         platform = params[:platform]
         if platform && !File.directory?("./platforms/#{platform}")
           if params[:cordova_no_fetch]
-            sh "cordova platform add #{platform} --nofetch"
+            sh "npx --no-install cordova platform add #{platform} --nofetch"
           else
-            sh "cordova platform add #{platform}"
+            sh "npx --no-install cordova platform add #{platform}"
           end
         end
       end
@@ -98,7 +98,7 @@ module Fastlane
         ios_args = self.get_ios_args(params) if params[:platform].to_s == 'ios'
 
         if params[:cordova_prepare]
-          sh "cordova prepare #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}"
+          sh "npx --no-install cordova prepare #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}"
         end
 
         if params[:platform].to_s == 'ios' && !params[:build_number].to_s.empty?
@@ -112,7 +112,7 @@ module Fastlane
           )
         end
 
-        sh "cordova compile #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}"
+        sh "npx --no-install cordova compile #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}"
       end
 
       def self.set_build_paths(is_release)
@@ -242,7 +242,7 @@ module Fastlane
           FastlaneCore::ConfigItem.new(
             key: :cordova_prepare,
             env_name: "CORDOVA_PREPARE",
-            description: "Specifies whether to run `cordova prepare` before building",
+            description: "Specifies whether to run `npx cordova prepare` before building",
             default_value: true,
             is_string: false
           ),
@@ -256,7 +256,7 @@ module Fastlane
           FastlaneCore::ConfigItem.new(
             key: :cordova_no_fetch,
             env_name: "CORDOVA_NO_FETCH",
-            description: "Call `cordova platform add` with `--nofetch` parameter",
+            description: "Call `npx cordova platform add` with `--nofetch` parameter",
             default_value: false,
             is_string: false
           ),
@@ -271,7 +271,7 @@ module Fastlane
           FastlaneCore::ConfigItem.new(
             key: :cordova_build_config_file,
             env_name: "CORDOVA_BUILD_CONFIG_FILE",
-            description: "Call `cordova compile` with `--buildConfig=<ConfigFile>` to specify build config file path",
+            description: "Call `npx cordova compile` with `--buildConfig=<ConfigFile>` to specify build config file path",
             is_string: true,
             optional: true,
             default_value: ''

@@ -20,5 +20,15 @@ platform :android do
       build_flag: ['-UseModernBuildSystem=0']
     )
     supply(apk: ENV('CORDOVA_ANDROID_RELEASE_BUILD_PATH'))
+
+    # Alternatively, deploy an Android Application Bundle
+    # cordova(
+    #   package_type: 'bundle',
+    #   platform: 'android',
+    #   keystore_path: './prod.keystore',
+    #   keystore_alias: 'prod',
+    #   keystore_password: 'password'
+    # )
+    # supply(aab: ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH'])
   end
 end

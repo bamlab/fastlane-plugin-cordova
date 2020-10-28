@@ -41,6 +41,16 @@ platform :android do
       keystore_password: 'password'
     )
     supply(apk: ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH'])
+
+    # Alternatively, deploy an Android Application Bundle
+    # cordova(
+    #   package_type: 'bundle',
+    #   platform: 'android',
+    #   keystore_path: './prod.keystore',
+    #   keystore_alias: 'prod',
+    #   keystore_password: 'password'
+    # )
+    # supply(aab: ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH'])
   end
 end
 ```
@@ -81,6 +91,7 @@ Which will produce:
 | **team_id**              | The development team (Team ID) to use for code signing  | CORDOVA_IOS_TEAM_ID               | *28323HT* |
 | **build_flag**           | An array of Xcode buildFlag. Will be appended on compile command.  | CORDOVA_IOS_BUILD_FLAG               | [] |
 | **provisioning_profile** | GUID of the provisioning profile to be used for signing | CORDOVA_IOS_PROVISIONING_PROFILE  |           |
+| **package_type**         | This will determine what type of Android build is generated. <br>Valid options are apk and bundle | CORDOVA_ANDROID_PACKAGE_TYPE    | apk |
 | **keystore_path**        | Path to the Keystore for Android                        | CORDOVA_ANDROID_KEYSTORE_PATH     |           |
 | **keystore_password**    | Android Keystore password                               | CORDOVA_ANDROID_KEYSTORE_PASSWORD |           |
 | **key_password**         | Android Key password (default is keystore password)     | CORDOVA_ANDROID_KEY_PASSWORD      |           |

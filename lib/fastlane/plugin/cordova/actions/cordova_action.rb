@@ -75,13 +75,10 @@ module Fastlane
       def self.check_platform(params)
         platform = params[:platform]
         if platform && !File.directory?("./platforms/#{platform}")
-          if params[:package_manager] == "yarn"
-            sh "yarn cordova platform add #{platform} --nofetch"
-          elsif params[:cordova_no_fetch]
-            sh "npx --no-install cordova platform add #{platform} --nofetch"
-          else
-            sh "npx --no-install cordova platform add #{platform}"
-          end
+          prefix = params[:node_package_manager] == "yarn" ? "yarn" : "npm --no-install"
+          suffix = params[:cordova_no_fetch] ? " --nofetch" : ""
+
+          sh prefix + " cordova platform add #{platform}" + suffix
         end
       end
 
@@ -94,6 +91,7 @@ module Fastlane
         args = [params[:release] ? '--release' : '--debug']
         args << '--device' if params[:device]
         args << '--browserify' if params[:browserify]
+        prefix = params[:node_package_manager] == "yarn" ? "yarn" : "npm --no-install"
 
         if !params[:cordova_build_config_file].to_s.empty?
           args << "--buildConfig=#{Shellwords.escape(params[:cordova_build_config_file])}"
@@ -103,11 +101,7 @@ module Fastlane
         ios_args = self.get_ios_args(params) if params[:platform].to_s == 'ios'
 
         if params[:cordova_prepare]
-          if params[:package_manager] == "yarn"
-            sh "yarn cordova prepare #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}"
-          else
-            sh "1qnpx --no-install cordova prepare #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}"
-          end
+          sh prefix + " cordova prepare #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}"
         end
 
         if params[:platform].to_s == 'ios' && !params[:build_number].to_s.empty?
@@ -121,11 +115,7 @@ module Fastlane
           )
         end
 
-        if params[:package_manager] == "yarn"
-          sh "yarn cordova compile #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}"
-        else
-          sh "npx --no-install cordova compile #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}"
-        end
+        sh prefix + " cordova compile #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}"
       end
 
       def self.set_build_paths(params)

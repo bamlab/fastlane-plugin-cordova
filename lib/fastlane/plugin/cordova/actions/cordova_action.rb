@@ -14,14 +14,16 @@ module Fastlane
         build_number: 'versionCode',
         min_sdk_version: 'gradleArg=-PcdvMinSdkVersion',
         cordova_no_fetch: 'cordovaNoFetch',
-        package_type: 'packageType'
+        package_type: 'packageType',
+        package_manager: 'packageManager'
       }
 
       IOS_ARGS_MAP = {
         type: 'packageType',
         team_id: 'developmentTeam',
         provisioning_profile: 'provisioningProfile',
-        build_flag: 'buildFlag'
+        build_flag: 'buildFlag',
+        package_manager: 'packageManager'
       }
 
       def self.get_platform_args(params, args_map)
@@ -73,11 +75,10 @@ module Fastlane
       def self.check_platform(params)
         platform = params[:platform]
         if platform && !File.directory?("./platforms/#{platform}")
-          if params[:cordova_no_fetch]
-            sh "npx --no-install cordova platform add #{platform} --nofetch"
-          else
-            sh "npx --no-install cordova platform add #{platform}"
-          end
+          prefix = params[:node_package_manager] == "yarn" ? "yarn" : "npm --no-install"
+          suffix = params[:cordova_no_fetch] ? " --nofetch" : ""
+
+          sh prefix + " cordova platform add #{platform}" + suffix
         end
       end
 
@@ -90,6 +91,7 @@ module Fastlane
         args = [params[:release] ? '--release' : '--debug']
         args << '--device' if params[:device]
         args << '--browserify' if params[:browserify]
+        prefix = params[:node_package_manager] == "yarn" ? "yarn" : "npm --no-install"
 
         if !params[:cordova_build_config_file].to_s.empty?
           args << "--buildConfig=#{Shellwords.escape(params[:cordova_build_config_file])}"
@@ -99,7 +101,7 @@ module Fastlane
         ios_args = self.get_ios_args(params) if params[:platform].to_s == 'ios'
 
         if params[:cordova_prepare]
-          sh "npx --no-install cordova prepare #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}"
+          sh prefix + " cordova prepare #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}"
         end
 
         if params[:platform].to_s == 'ios' && !params[:build_number].to_s.empty?
@@ -113,7 +115,7 @@ module Fastlane
           )
         end
 
-        sh "npx --no-install cordova compile #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}"
+        sh prefix + " cordova compile #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}"
       end
 
       def self.set_build_paths(params)
@@ -246,7 +248,7 @@ module Fastlane
             env_name: "CORDOVA_BUILD_NUMBER",
             description: "Build Number for iOS",
             optional: true,
-            is_string: false,
+            is_string: false
           ),
           FastlaneCore::ConfigItem.new(
             key: :browserify,
@@ -291,6 +293,14 @@ module Fastlane
             is_string: true,
             optional: true,
             default_value: ''
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :package_manager,
+            env_name: "NODE_PACKAGE_MANAGER",
+            description: "Call `cordova` command with a different package manager currently only accepts either 'yarn' or 'npm'. If yarn is set then then then cordovaNoFetch argument is ignore",
+            optional: true,
+            is_string: true,
+            default_value: 'npm'
           )
         ]
       end

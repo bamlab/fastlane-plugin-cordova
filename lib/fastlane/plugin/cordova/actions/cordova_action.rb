@@ -14,6 +14,7 @@ module Fastlane
         build_number: 'versionCode',
         min_sdk_version: 'gradleArg=-PcdvMinSdkVersion',
         cordova_no_fetch: 'cordovaNoFetch',
+        cordova_rm_before_add: 'cordovaRmBeforeAdd',
         package_type: 'packageType'
       }
 
@@ -72,11 +73,18 @@ module Fastlane
 
       def self.check_platform(params)
         platform = params[:platform]
-        if platform && !File.directory?("./platforms/#{platform}")
-          if params[:cordova_no_fetch]
-            sh "npx --no-install cordova platform add #{platform} --nofetch"
-          else
-            sh "npx --no-install cordova platform add #{platform}"
+        if platform
+          if params[:cordova_rm_before_add]
+            sh "npx --no-install cordova platform rm #{platform}"
+            FileUtils.rm_rf("./platforms/#{platform}")
+          end
+
+          if !File.directory?("./platforms/#{platform}")
+            if params[:cordova_no_fetch]
+              sh "npx --no-install cordova platform add #{platform} --nofetch"
+            else
+              sh "npx --no-install cordova platform add #{platform}"
+            end
           end
         end
       end
@@ -273,6 +281,13 @@ module Fastlane
             key: :cordova_no_fetch,
             env_name: "CORDOVA_NO_FETCH",
             description: "Call `npx cordova platform add` with `--nofetch` parameter",
+            default_value: false,
+            is_string: false
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :cordova_rm_before_add,
+            env_name: "CORDOVA_RM_BEFORE_ADD",
+            description: "Call `npx cordova platform rm` before adding the platform again",
             default_value: false,
             is_string: false
           ),

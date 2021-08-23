@@ -16,7 +16,7 @@ platform :android do
       platform: 'android',
       keystore_path: './prod.keystore',
       keystore_alias: 'prod',
-      keystore_password: 'password'
+      keystore_password: 'password',
       build_flag: ['-UseModernBuildSystem=0']
     )
     supply(apk: ENV('CORDOVA_ANDROID_RELEASE_BUILD_PATH'))

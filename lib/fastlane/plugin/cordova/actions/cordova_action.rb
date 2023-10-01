@@ -116,6 +116,28 @@ module Fastlane
         sh "npx --no-install cordova compile #{params[:platform]} #{args.join(' ')} #{ios_args} -- #{android_args}"
       end
 
+      # @param [String] platforms_output The output from running +cordova platform ls+.
+      # @return [true] if the platforms_output indicates Cordova iOS version 7.0.0 or greater is installed
+      def self.output_has_ios_7_or_greater(platforms_output)
+        # Extract the Cordova iOS version by searching for a string like "ios 7.0.0"
+        platforms_regex = /^.*ios\s(\d+).\d+.\d+/
+        match_data = platforms_output.match(platforms_regex)
+        if match_data != nil && match_data.size() > 1
+          ios_major_version = match_data[1].to_i
+          return ios_major_version >= 7
+        end
+        return false
+      end
+
+      # @return [true] if Cordova iOS version 7.0.0 or greater is installed
+      def self.using_ios_7_or_greater(params)
+        if params[:platform].to_s != 'ios'
+          return false
+        end
+        platforms_output = sh "npx --no-install cordova platform ls"
+        return self.output_has_ios_7_or_greater(platforms_output)
+      end
+
       def self.set_build_paths(params)
         app_name = self.get_app_name()
         build_type = params[:release] ? 'release' : 'debug'
@@ -126,7 +148,8 @@ module Fastlane
         android_package_extension = android_package_type == 'bundle' ? '.aab' : '.apk'
 
         ENV['CORDOVA_ANDROID_RELEASE_BUILD_PATH'] = "./platforms/android/app/build/outputs/#{android_package_type}/#{build_type}/app-#{build_type}#{android_package_extension}"
-        ENV['CORDOVA_IOS_RELEASE_BUILD_PATH'] = "./platforms/ios/build/device/#{app_name}.ipa"
+        ios_subdirectory = self.using_ios_7_or_greater(params) ? 'Release-iphoneos' : 'device'
+        ENV['CORDOVA_IOS_RELEASE_BUILD_PATH'] = "./platforms/ios/build/#{ios_subdirectory}/#{app_name}.ipa"
       end
 
       def self.run(params)

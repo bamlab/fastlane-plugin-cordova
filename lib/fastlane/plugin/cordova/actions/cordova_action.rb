@@ -14,6 +14,8 @@ module Fastlane
         build_number: 'versionCode',
         min_sdk_version: 'gradleArg=-PcdvMinSdkVersion',
         cordova_no_fetch: 'cordovaNoFetch',
+        cordova_rm_before_add: 'cordovaRmBeforeAdd',
+        cordova_clean_before_build: 'cordovaCleanBeforeBuild',
         package_type: 'packageType'
       }
 
@@ -72,12 +74,25 @@ module Fastlane
 
       def self.check_platform(params)
         platform = params[:platform]
-        if platform && !File.directory?("./platforms/#{platform}")
-          if params[:cordova_no_fetch]
-            sh "npx --no-install cordova platform add #{platform} --nofetch"
-          else
-            sh "npx --no-install cordova platform add #{platform}"
+        if platform
+          if params[:cordova_rm_before_add]
+            sh "npx --no-install cordova platform rm #{platform}"
+            FileUtils.rm_rf("./platforms/#{platform}")
           end
+
+          if !File.directory?("./platforms/#{platform}")
+            if params[:cordova_no_fetch]
+              sh "npx --no-install cordova platform add #{platform} --nofetch"
+            else
+              sh "npx --no-install cordova platform add #{platform}"
+            end
+          end
+        end
+      end
+
+      def self.clean(params)
+        if params[:cordova_clean_before_build]
+          sh "npx --no-install cordova clean"
         end
       end
 
@@ -154,6 +169,7 @@ module Fastlane
 
       def self.run(params)
         self.check_platform(params)
+        self.clean(params)
         self.build(params)
         self.set_build_paths(params)
       end
@@ -296,6 +312,20 @@ module Fastlane
             key: :cordova_no_fetch,
             env_name: "CORDOVA_NO_FETCH",
             description: "Call `npx cordova platform add` with `--nofetch` parameter",
+            default_value: false,
+            is_string: false
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :cordova_rm_before_add,
+            env_name: "CORDOVA_RM_BEFORE_ADD",
+            description: "Call `npx cordova platform rm` before adding the platform again",
+            default_value: false,
+            is_string: false
+          ),
+          FastlaneCore::ConfigItem.new(
+            key: :cordova_clean_before_build,
+            env_name: "CORDOVA_CLEAN_BEFORE_BUILD",
+            description: "Call `npx cordova platform clean` before the build",
             default_value: false,
             is_string: false
           ),
